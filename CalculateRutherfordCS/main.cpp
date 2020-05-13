@@ -65,6 +65,7 @@ double GetRutherfordCSFrom0TotmaxElectronScreening(double Tls, int z, double m, 
     return cs;
 }
 
+/*
 int main(int argc, char *argv[])
 {   
     const double Tls = 100 * keV;
@@ -97,3 +98,29 @@ int main(int argc, char *argv[])
     std::cout<<"l1="<<l1/um<<" um"<<std::endl;
     return 0;
 }
+/*/
+
+//*
+void sayHi();
+
+using namespace std;
+
+int &fun()
+{
+  static int x = 10;
+  return x;
+}
+
+extern int x;
+extern const int y;
+
+int main()
+{
+   int x=10;
+   fun() = 30;
+   cout << fun();
+   sayHi();
+   cout << "x=" << x << "   " << "y=" <<y <<"\n";
+   return 0;
+}
+//*/

@@ -406,7 +406,8 @@ QLineEdit#lineEditSurname:hover {
       <item>
        <widget class="QTableView" name="tableView">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(238, 238, 236);</string>
+         <string notr="true">background-color: rgb(238, 238, 236);
+text-align: center;</string>
         </property>
        </widget>
       </item>

@@ -59,14 +59,20 @@ void AddressBookForm::CancelSlot()
 
 void AddressBookForm::AddContactSlot()
 {
-    addContactDialog->hide();
     QString name = addContactDialog->GetName();
     QString surname = addContactDialog->GetSurname();
     QString phone = addContactDialog->GetPhone();
 
-    delete addContactDialog;
-
-    emit AddContactSignal(name, surname, phone);
+    if(name.isEmpty() || surname.isEmpty() || phone.isEmpty() )
+    {
+        QMessageBox::critical(this, "Incomplete input", "Some of the input fields is empty");
+    }
+    else
+    {
+        addContactDialog->hide();
+        delete addContactDialog;
+        emit AddContactSignal(name, surname, phone);
+    }
 }
 
 void AddressBookForm::on_ViewContactsButton_clicked()
@@ -75,17 +81,20 @@ void AddressBookForm::on_ViewContactsButton_clicked()
     QSqlQuery query(db.GetDB());
     query.exec("SELECT * FROM contacts;");
     QSqlRecord rec = query.record();
-    int id, age;
-    QString name;
-    qDebug() << query.next();
+    int id;
+    QString name, surname, phone;
+    query.first();
     while (query.next()) {
         id = query.value(rec.indexOf("id")).toInt();
         name = query.value(rec.indexOf("name")).toString();
-        age = query.value(rec.indexOf("address")).toInt();
+        surname = query.value(rec.indexOf("surname")).toString();
+        phone = query.value(rec.indexOf("phone")).toString();
+
 
         qDebug() << "id is " << id
                  << ". name is " << name
-                 << ". age is" << age
+                 << ". surname is " << surname
+                 << " phone is " << phone
                  << query.lastError().text()
                  << query.lastError().number();
         }
@@ -94,14 +103,63 @@ void AddressBookForm::on_ViewContactsButton_clicked()
 
     model->setQuery(query);
     ui->tableView->setModel(model);
-    QHeaderView* header = ui->tableView->horizontalHeader();
-    header->setSectionResizeMode(QHeaderView::Stretch);
+
+    ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
+    ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
     //renames the column name:
     //model->setHeaderData(1, Qt::Horizontal, "234");
 
+}
+
+void AddressBookForm::on_SearchButton_clicked()
+{
+    QSqlQueryModel * model = new QSqlQueryModel();
+    QSqlQuery query(db.GetDB());
+
+    QString name = ui->lineEditName->text();
+    QString surname = ui->lineEditSurname->text();
+
+    query.exec("SELECT * FROM contacts WHERE name LIKE ? AND surname LIKE ?;");
+    query.bindValue(0, "%" + name + "%");
+    query.bindValue(1, "%" + surname + "%");
+    QSqlRecord rec = query.record();
+    bool b = query.exec();
+    int id;
+    QString phone;
+    query.first();
+    while (query.next()) {
+        id = query.value(rec.indexOf("id")).toInt();
+        name = query.value(rec.indexOf("name")).toString();
+        surname = query.value(rec.indexOf("surname")).toString();
+        phone = query.value(rec.indexOf("phone")).toString();
 
 
-    ui->tableView->setColumnWidth(0, ui->tableView->width()/5);
-    ui->tableView->setColumnWidth(1, 2 * ui->tableView->width()/5);
+        qDebug() << "id is " << id
+                 << ". name is " << name
+                 << ". surname is " << surname
+                 << ". phone is " << phone
+                 << query.lastError().text()
+                 << query.lastError().number();
+        }
+
+    qDebug() << "STEP #3";
+
+    model->setQuery(query);
+    ui->tableView->setModel(model);
+
+    ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
+    ui->tableView->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    //renames the column name:
+    //model->setHeaderData(1, Qt::Horizontal, "234");
 
 }

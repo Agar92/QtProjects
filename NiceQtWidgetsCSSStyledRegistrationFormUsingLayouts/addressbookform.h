@@ -30,6 +30,8 @@ private slots:
 
     void on_ViewContactsButton_clicked();
 
+    void on_SearchButton_clicked();
+
 signals:
     void AddContactSignal(QString, QString, QString);
 
