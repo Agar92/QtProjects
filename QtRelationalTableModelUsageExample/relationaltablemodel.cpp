@@ -80,7 +80,6 @@ static bool createConnection()
         query.exec("insert into images values(2, 'images/qt-creator.png')");
         query.exec("insert into images values(3, 'images/qt-project.png')");
     }
-
     return true;
 }
 
@@ -112,14 +111,14 @@ void createRelationalTables()
     QSqlQuery query;
 
     if(QFile::exists(DBName))
-        QMessageBox::information(new QWidget(), "DB", "Database exists");
+        QMessageBox::information(nullptr, "DB", "Database exists");
     else
-        QMessageBox::critical(new QWidget(), "DB", "Database does not exist");
+        QMessageBox::critical(nullptr, "DB", "Database does not exist");
 
     if(db.tables().contains(QLatin1String("employee")))
-        QMessageBox::information(new QWidget(), "DB", "Table employee exists");
+        QMessageBox::information(nullptr, "DB", "Table employee exists");
     else
-        QMessageBox::critical(new QWidget(), "DB", "Table employee does not exist");
+        QMessageBox::critical(nullptr, "DB", "Table employee does not exist");
 
     if(!db.tables().contains(QLatin1String("employee")))
     {
