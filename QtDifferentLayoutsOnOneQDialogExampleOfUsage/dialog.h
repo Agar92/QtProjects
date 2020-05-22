@@ -22,6 +22,9 @@ class Dialog : public QDialog
 public:
     Dialog();
 
+private slots:
+    void onButton1clicked();
+
 private:
     void createMenu();
     void createHorizontalGroupBox();

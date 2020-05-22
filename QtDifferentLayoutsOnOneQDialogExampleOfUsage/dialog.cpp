@@ -26,6 +26,19 @@ Dialog::Dialog()
     mainLayout->addWidget(buttonBox);
     setLayout(mainLayout);
     setWindowTitle(tr("Basic Layouts"));
+
+    //connect(buttons[0], &QPushButton::clicked, this, &Dialog::onButton1clicked);
+    for(int i=0; i<NumButtons; ++i)
+    {
+        connect(buttons[i], &QPushButton::clicked, [this, i](){
+            QMessageBox::information(this, "Button clicked", QString("Button %1 clicked").arg(i+1));
+        });
+    }
+}
+
+void Dialog::onButton1clicked()
+{
+    QMessageBox::information(this, "Button clicked", "Button 1 clicked");
 }
 
 // See here: https://stackoverflow.com/questions/26791102/qt-use-of-in-tr
@@ -71,12 +84,15 @@ void Dialog::createGridGroupBox()
     for (int i = 0; i < NumGridRows; ++i) {
         labels[i] = new QLabel(tr("Line %1:").arg(i + 1));
         lineEdits[i] = new QLineEdit;
+        lineEdits[i]->setPlaceholderText(QString("String %1").arg(i+1));
         layout->addWidget(labels[i], i + 1, 0);
         layout->addWidget(lineEdits[i], i + 1, 1);
     }
     smallEditor = new QTextEdit;
-    smallEditor->setPlainText(tr("This widget takes up about two thirds of the "
-                                 "grid layout."));
+//    smallEditor->setPlainText(tr("This widget takes up about two thirds of the "
+//                                 "grid layout."));
+    smallEditor->setPlaceholderText(tr("This widget takes up about two thirds of the "
+                                       "grid layout."));
     layout->addWidget(smallEditor, 0, 2, 4, 1);
     layout->setColumnStretch(1, 10);
     layout->setColumnStretch(2, 20);
@@ -87,9 +103,16 @@ void Dialog::createFormGroupBox()
 {
     formGroupBox = new QGroupBox(tr("Form layout"));
     QFormLayout *layout = new QFormLayout;
-    layout->addRow(new QLabel(tr("Line 1:")), new QLineEdit);
-    layout->addRow(new QLabel(tr("Line 2, long text:")), new QComboBox);
-    layout->addRow(new QLabel(tr("Line 3:")), new QSpinBox);
+    QLineEdit * lineEdit = new QLineEdit;
+    lineEdit->setPlaceholderText("Type Your name here");
+    layout->addRow(new QLabel(tr("Line 1:")), lineEdit);
+    QComboBox * combo = new QComboBox;
+    combo->addItem("Student");
+    combo->addItem("Tutor");
+    layout->addRow(new QLabel(tr("Line 2, long text:")), combo);
+    QSpinBox * spin = new QSpinBox;
+    spin->setValue(10);
+    layout->addRow(new QLabel(tr("Line 3:")), spin);
     formGroupBox->setLayout(layout);
 }
 
